@@ -148,7 +148,7 @@ Resources:
                   - s3:GetObject
                   - s3:PutObject
                   - s3:DeleteObject
-                Resource: !Sub ${MediaBucket}/*
+                Resource: !Sub '${MediaBucket}/*'
         - PolicyName: ApiGatewayManagement
           PolicyDocument:
             Version: '2012-10-17'
