@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://your-api-gateway-url.amazonaws.com/dev';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://uk55f585fc.execute-api.us-east-1.amazonaws.com/dev';
 
 interface ChatMessage {
   messageId: string;

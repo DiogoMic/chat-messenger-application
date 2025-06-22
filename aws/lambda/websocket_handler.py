@@ -5,8 +5,8 @@ from datetime import datetime
 import time
 
 dynamodb = boto3.resource('dynamodb')
-connections_table = dynamodb.Table(os.environ['CONNECTIONS_TABLE'])
-messages_table = dynamodb.Table(os.environ['MESSAGES_TABLE'])
+connections_table = dynamodb.Table(os.environ['WebSocketConnections-dev'])
+messages_table = dynamodb.Table(os.environ['ChatMessages-dev'])
 
 def lambda_handler(event, context):
     request_context = event['requestContext']
