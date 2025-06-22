@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="5.0" etag="abc123" version="22.1.0" type="device">
+  <diagram name="Chat Messenger Architecture" id="architecture">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Title -->
+        <mxCell id="title" value="Chat Messenger Application - AWS Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="400" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- User/Client Layer -->
+        <mxCell id="user" value="Users" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="30" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Frontend Layer -->
+        <mxCell id="frontend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="80" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend-title" value="Frontend Layer" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="85" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="react-app" value="React App&#xa;(Vite + TypeScript)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="220" y="110" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- CDN Layer -->
+        <mxCell id="cloudfront" value="CloudFront CDN" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#945DF2;gradientDirection=north;fillColor=#5A30B5;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudfront;" vertex="1" parent="1">
+          <mxGeometry x="480" y="100" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <!-- S3 Static Hosting -->
+        <mxCell id="s3-frontend" value="S3 Bucket&#xa;(Static Website)" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#60A337;gradientDirection=north;fillColor=#277116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" vertex="1" parent="1">
+          <mxGeometry x="640" y="100" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <!-- API Gateway Layer -->
+        <mxCell id="api-gateway-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="250" width="400" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="api-gateway-title" value="API Gateway Layer" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="255" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="websocket-api" value="WebSocket API&#xa;(Real-time)" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#FF4F8B;gradientDirection=north;fillColor=#BC1356;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.api_gateway;" vertex="1" parent="1">
+          <mxGeometry x="240" y="290" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rest-api" value="REST API&#xa;(HTTP)" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#FF4F8B;gradientDirection=north;fillColor=#BC1356;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.api_gateway;" vertex="1" parent="1">
+          <mxGeometry x="480" y="290" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <!-- Lambda Layer -->
+        <mxCell id="lambda-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="420" width="400" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="lambda-title" value="Compute Layer (Serverless)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="425" width="150" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="websocket-lambda" value="WebSocket Handler&#xa;Lambda" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#D05C17;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" vertex="1" parent="1">
+          <mxGeometry x="240" y="460" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <mxCell id="api-lambda" value="API Handler&#xa;Lambda" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#D05C17;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" vertex="1" parent="1">
+          <mxGeometry x="480" y="460" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <!-- Database Layer -->
+        <mxCell id="database-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="600" width="520" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="database-title" value="Database Layer" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="315" y="605" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="messages-table" value="ChatMessages&#xa;Table" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#4D72F3;gradientDirection=north;fillColor=#3334B9;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.dynamodb;" vertex="1" parent="1">
+          <mxGeometry x="120" y="640" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rooms-table" value="ChatRooms&#xa;Table" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#4D72F3;gradientDirection=north;fillColor=#3334B9;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.dynamodb;" vertex="1" parent="1">
+          <mxGeometry x="280" y="640" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <mxCell id="connections-table" value="WebSocket&#xa;Connections" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#4D72F3;gradientDirection=north;fillColor=#3334B9;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.dynamodb;" vertex="1" parent="1">
+          <mxGeometry x="440" y="640" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <!-- Storage Layer -->
+        <mxCell id="s3-media" value="S3 Media&#xa;Bucket" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#60A337;gradientDirection=north;fillColor=#277116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" vertex="1" parent="1">
+          <mxGeometry x="720" y="460" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <!-- Connections -->
+        <!-- User to React App -->
+        <mxCell id="edge1" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="user" target="react-app">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- React App to CloudFront -->
+        <mxCell id="edge2" value="HTTPS" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="react-app" target="cloudfront">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- CloudFront to S3 -->
+        <mxCell id="edge3" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="cloudfront" target="s3-frontend">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- React App to WebSocket API -->
+        <mxCell id="edge4" value="WSS" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="react-app" target="websocket-api">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- React App to REST API -->
+        <mxCell id="edge5" value="HTTPS" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="react-app" target="rest-api">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- WebSocket API to Lambda -->
+        <mxCell id="edge6" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="websocket-api" target="websocket-lambda">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- REST API to Lambda -->
+        <mxCell id="edge7" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="rest-api" target="api-lambda">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Lambda to DynamoDB -->
+        <mxCell id="edge8" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="websocket-lambda" target="messages-table">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge9" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="websocket-lambda" target="connections-table">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge10" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="api-lambda" target="rooms-table">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge11" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="api-lambda" target="s3-media">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Data Flow Labels -->
+        <mxCell id="flow1" value="Real-time Messages" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#FF6B6B;" vertex="1" parent="1">
+          <mxGeometry x="140" y="200" width="100" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flow2" value="File Uploads &amp; API Calls" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#4ECDC4;" vertex="1" parent="1">
+          <mxGeometry x="520" y="200" width="100" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="850" y="100" width="200" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="Legend" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="110" width="60" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend1" value="• Real-time messaging via WebSocket" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="860" y="140" width="180" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend2" value="• File uploads to S3 with signed URLs" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="860" y="160" width="180" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend3" value="• Persistent chat history in DynamoDB" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="860" y="180" width="180" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend4" value="• Auto-scaling serverless architecture" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="860" y="200" width="180" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend5" value="• CDN-delivered static assets" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="860" y="220" width="180" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend6" value="• Pay-per-request billing model" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="860" y="240" width="180" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend7" value="• Global distribution via CloudFront" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="860" y="260" width="180" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend8" value="• Environment-specific deployments" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="860" y="280" width="180" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

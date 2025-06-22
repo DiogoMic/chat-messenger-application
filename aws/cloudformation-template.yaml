@@ -1,0 +1,346 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Chat Messenger Application Infrastructure
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+
+Resources:
+  # S3 Bucket for static website hosting
+  WebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub chat-app-frontend-${Environment}-${AWS::AccountId}
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+
+  # S3 Bucket for media storage
+  MediaBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub chat-app-media-${Environment}-${AWS::AccountId}
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+              - PUT
+              - POST
+              - DELETE
+            AllowedOrigins:
+              - '*'
+            MaxAge: 3000
+
+  # DynamoDB Tables
+  ChatMessagesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ChatMessages-${Environment}
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: chatId
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: 'N'
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: chatId
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: UserMessagesIndex
+          KeySchema:
+            - AttributeName: userId
+              KeyType: HASH
+            - AttributeName: timestamp
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+  ChatRoomsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ChatRooms-${Environment}
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: chatId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: chatId
+          KeyType: HASH
+
+  WebSocketConnectionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub WebSocketConnections-${Environment}
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: connectionId
+          AttributeType: S
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: connectionId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: UserConnectionsIndex
+          KeySchema:
+            - AttributeName: userId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+
+  # Lambda Execution Role
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource:
+                  - !GetAtt ChatMessagesTable.Arn
+                  - !GetAtt ChatRoomsTable.Arn
+                  - !GetAtt WebSocketConnectionsTable.Arn
+                  - !Sub ${ChatMessagesTable.Arn}/index/*
+                  - !Sub ${WebSocketConnectionsTable.Arn}/index/*
+        - PolicyName: S3Access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource: !Sub ${MediaBucket}/*
+        - PolicyName: ApiGatewayManagement
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - execute-api:ManageConnections
+                Resource: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+
+  # Lambda Functions
+  WebSocketFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub chat-websocket-${Environment}
+      Runtime: python3.11
+      Handler: websocket_handler.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        ZipFile: |
+          # WebSocket handler code will be deployed separately
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': 'Hello from WebSocket'}
+      Environment:
+        Variables:
+          CONNECTIONS_TABLE: !Ref WebSocketConnectionsTable
+          MESSAGES_TABLE: !Ref ChatMessagesTable
+          ENVIRONMENT: !Ref Environment
+
+  ApiFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub chat-api-${Environment}
+      Runtime: python3.11
+      Handler: api_handler.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        ZipFile: |
+          # API handler code will be deployed separately
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': 'Hello from API'}
+      Environment:
+        Variables:
+          MESSAGES_TABLE: !Ref ChatMessagesTable
+          CHAT_ROOMS_TABLE: !Ref ChatRoomsTable
+          MEDIA_BUCKET: !Ref MediaBucket
+          ENVIRONMENT: !Ref Environment
+
+  # API Gateway WebSocket API
+  WebSocketApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Sub chat-websocket-api-${Environment}
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: $request.body.action
+
+  WebSocketDeployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+      - ConnectRoute
+      - DisconnectRoute
+      - SendMessageRoute
+    Properties:
+      ApiId: !Ref WebSocketApi
+
+  WebSocketStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref WebSocketApi
+      DeploymentId: !Ref WebSocketDeployment
+      StageName: !Ref Environment
+
+  # WebSocket Routes
+  ConnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: $connect
+      AuthorizationType: NONE
+      Target: !Sub integrations/${ConnectIntegration}
+
+  DisconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: $disconnect
+      AuthorizationType: NONE
+      Target: !Sub integrations/${DisconnectIntegration}
+
+  SendMessageRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: sendMessage
+      AuthorizationType: NONE
+      Target: !Sub integrations/${SendMessageIntegration}
+
+  # WebSocket Integrations
+  ConnectIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebSocketApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WebSocketFunction.Arn}/invocations
+
+  DisconnectIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebSocketApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WebSocketFunction.Arn}/invocations
+
+  SendMessageIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebSocketApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WebSocketFunction.Arn}/invocations
+
+  # Lambda Permissions for WebSocket
+  WebSocketLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref WebSocketFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*
+
+  # REST API Gateway
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: !Sub chat-rest-api-${Environment}
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+
+  # CloudFront Distribution
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - Id: S3Origin
+            DomainName: !GetAtt WebsiteBucket.RegionalDomainName
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+            - PUT
+            - POST
+            - PATCH
+            - DELETE
+          CachedMethods:
+            - GET
+            - HEAD
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+        Enabled: true
+        DefaultRootObject: index.html
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+
+Outputs:
+  WebSocketUrl:
+    Description: WebSocket API URL
+    Value: !Sub wss://${WebSocketApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}
+    Export:
+      Name: !Sub ${AWS::StackName}-WebSocketUrl
+
+  RestApiUrl:
+    Description: REST API URL
+    Value: !Sub https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}
+    Export:
+      Name: !Sub ${AWS::StackName}-RestApiUrl
+
+  CloudFrontUrl:
+    Description: CloudFront Distribution URL
+    Value: !GetAtt CloudFrontDistribution.DomainName
+    Export:
+      Name: !Sub ${AWS::StackName}-CloudFrontUrl
+
+  MediaBucketName:
+    Description: Media Storage Bucket Name
+    Value: !Ref MediaBucket
+    Export:
+      Name: !Sub ${AWS::StackName}-MediaBucket
