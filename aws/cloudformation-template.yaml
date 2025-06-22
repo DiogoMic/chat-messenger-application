@@ -168,7 +168,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - execute-api:ManageConnections
-                Resource: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*
+                Resource: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*'
 
   # Lambda Functions
   WebSocketFunction:
