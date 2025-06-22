@@ -25,6 +25,18 @@ Resources:
         IgnorePublicAcls: false
         RestrictPublicBuckets: false
 
+  # S3 Bucket Policy for public access
+  WebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebsiteBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Sub '${WebsiteBucket}/*'
+
   # S3 Bucket for media storage
   MediaBucket:
     Type: AWS::S3::Bucket
@@ -321,26 +333,6 @@ Resources:
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*'
 
-  # Origin Access Identity for CloudFront
-  OriginAccessIdentity:
-    Type: AWS::CloudFront::OriginAccessIdentity
-    Properties:
-      OriginAccessIdentityConfig:
-        Comment: !Sub 'OAI for ${AWS::StackName}'
-
-  # S3 Bucket Policy for CloudFront
-  WebsiteBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Ref WebsiteBucket
-      PolicyDocument:
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${OriginAccessIdentity}'
-            Action: 's3:GetObject'
-            Resource: !Sub '${WebsiteBucket}/*'
-
   # CloudFront Distribution
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
@@ -350,7 +342,7 @@ Resources:
           - Id: S3Origin
             DomainName: !GetAtt WebsiteBucket.RegionalDomainName
             S3OriginConfig:
-              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${OriginAccessIdentity}'
+              OriginAccessIdentity: ''
         DefaultCacheBehavior:
           TargetOriginId: S3Origin
           ViewerProtocolPolicy: redirect-to-https
