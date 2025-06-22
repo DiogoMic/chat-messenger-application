@@ -3,6 +3,8 @@
 A modern, real-time chat messenger application built with React and deployed on AWS with WebSocket support, object storage, and persistent chat history.
 
 ## Architecture Overview
+![architecture-diagram drawio](https://github.com/user-attachments/assets/28653a9f-93be-4380-afbf-a7bc87f6fa74)
+
 
 ### AWS Services Used:
 - **Frontend**: CloudFront + S3 (Static hosting)
