@@ -15,9 +15,10 @@ interface ChatSidebarProps {
   contacts: Contact[];
   activeChat: string;
   onChatSelect: (contactId: string) => void;
+  onNewChat: () => void;
 }
 
-export const ChatSidebar: React.FC<ChatSidebarProps> = ({ contacts, activeChat, onChatSelect }) => {
+export const ChatSidebar: React.FC<ChatSidebarProps> = ({ contacts, activeChat, onChatSelect, onNewChat }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredContacts = contacts.filter(contact =>
@@ -37,7 +38,10 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ contacts, activeChat, 
             <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
               <Video size={20} />
             </button>
-            <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
+            <button 
+              onClick={onNewChat}
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+            >
               <Plus size={20} />
             </button>
           </div>

@@ -9,8 +9,8 @@ import string
 dynamodb = boto3.resource('dynamodb')
 s3 = boto3.client('s3')
 
-messages_table = dynamodb.Table(os.environ['ChatMessages-dev'])
-chat_rooms_table = dynamodb.Table(os.environ['ChatRooms-dev'])
+messages_table = dynamodb.Table(os.environ['MESSAGES_TABLE'])
+chat_rooms_table = dynamodb.Table(os.environ['CHAT_ROOMS_TABLE'])
 media_bucket = os.environ['MEDIA_BUCKET']
 
 def lambda_handler(event, context):

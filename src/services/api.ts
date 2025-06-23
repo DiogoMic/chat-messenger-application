@@ -1,4 +1,6 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://uk55f585fc.execute-api.us-east-1.amazonaws.com/dev';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://uk55f585fc.execute-api.us-east-1.amazonaws.com/dev';
+
+console.log('API Base URL:', API_BASE_URL);
 
 interface ChatMessage {
   messageId: string;

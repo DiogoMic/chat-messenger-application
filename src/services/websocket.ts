@@ -57,8 +57,18 @@ class WebSocketService {
 
       this.ws.onerror = (error) => {
         console.error('WebSocket error:', error);
+        console.error('WebSocket URL:', url);
         this.isConnecting = false;
         reject(error);
+      };
+
+      this.ws.onclose = (event) => {
+        console.log('WebSocket closed:', event.code, event.reason);
+        console.log('WebSocket URL:', url);
+        this.isConnecting = false;
+        if (event.code !== 1000) {
+          reject(new Error(`WebSocket closed with code ${event.code}: ${event.reason}`));
+        }
       };
     });
   }
